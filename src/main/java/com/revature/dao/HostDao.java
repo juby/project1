@@ -35,5 +35,10 @@ public class HostDao implements Dao<Host> {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public boolean checkPassword(Host obj, String passHash) {
+		return false;
+		//TODO checkPassword
+	}
 
 }
