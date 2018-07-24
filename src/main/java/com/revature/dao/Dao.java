@@ -1,5 +1,6 @@
 package com.revature.dao;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -9,13 +10,13 @@ import java.util.List;
  * @param <T> The type of object this DAO will be handling
  */
 interface Dao<T> {
-	void create(T obj);
+	void create(T obj) throws SQLException;
 
-	T read(int id);
+	T read(int id) throws SQLException;
 
-	List<T> readAll();
+	List<T> readAll() throws SQLException;
 
-	void update(T obj);
+	void update(T obj) throws SQLException;
 
-	void delete(T obj);
+	void delete(T obj) throws SQLException;
 }

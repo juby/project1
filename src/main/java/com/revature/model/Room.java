@@ -42,4 +42,11 @@ public class Room {
 		return roomNumber;
 	}
 
+	/**
+	 * @param roomNumber the roomNumber to set
+	 */
+	public void setRoomNumber(int roomNumber) {
+		this.roomNumber = roomNumber;
+	}
+
 }

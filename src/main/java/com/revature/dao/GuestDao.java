@@ -3,7 +3,6 @@ package com.revature.dao;
 import java.util.List;
 
 import com.revature.model.Guest;
-import com.revature.model.Host;
 
 public class GuestDao implements Dao<Guest> {
 

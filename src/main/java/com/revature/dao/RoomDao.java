@@ -1,5 +1,6 @@
 package com.revature.dao;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import com.revature.model.Room;
@@ -7,7 +8,7 @@ import com.revature.model.Room;
 public class RoomDao implements Dao<Room> {
 
 	@Override
-	public void create(Room obj) {
+	public void create(Room obj) throws SQLException{
 		// TODO Auto-generated method stub
 		
 	}
@@ -20,8 +21,8 @@ public class RoomDao implements Dao<Room> {
 
 	@Override
 	public List<Room> readAll() {
-		// TODO Auto-generated method stub
 		return null;
+		// TODO Auto-generated method stub
 	}
 
 	@Override
