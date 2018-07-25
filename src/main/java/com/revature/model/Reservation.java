@@ -27,8 +27,9 @@ public class Reservation {
 	 * @param status
 	 */
 	public Reservation(int id, Guest guest, Room room, Host host, LocalDate checkin, LocalDate checkout,
-			boolean status) {
+			boolean status) throws IllegalArgumentException {
 		super();
+		if(checkout.isBefore(checkin)) throw new IllegalArgumentException();
 		this.id = id;
 		this.guest = guest;
 		this.room = room;

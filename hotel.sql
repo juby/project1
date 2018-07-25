@@ -41,7 +41,6 @@ CREATE TABLE guests
     g_email VARCHAR2(100) NOT NULL,
     g_pwd VARCHAR2(32) NOT NULL,
     g_salt VARCHAR(16) NOT NULL,
-    g_iter NUMBER NOT NULL,
     g_istmp NUMBER(1) NOT NULL,
     CONSTRAINT pk_guests PRIMARY KEY (g_id)
 );
@@ -55,7 +54,6 @@ CREATE TABLE hosts
     h_email VARCHAR2(100) NOT NULL,
     h_pwd VARCHAR(32) NOT NULL,
     h_salt VARCHAR(16) NOT NULL,
-    h_iter NUMBER NOT NULL,
     CONSTRAINT pk_hosts PRIMARY KEY (h_id)
 );
 
@@ -154,7 +152,7 @@ END;
 /*******************************************************************************
    INITIALIZE DATA
 ********************************************************************************/
-
+/*
 Insert into rooms values (101, NULL);
 Insert into rooms values (102, NULL);
 Insert into rooms values (103, NULL);
@@ -170,3 +168,4 @@ Insert into rooms values (302, NULL);
 Insert into rooms values (303, NULL);
 Insert into rooms values (304, NULL);
 Insert into rooms values (305, NULL);
+*/

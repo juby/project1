@@ -1,39 +1,58 @@
 package com.revature.dao;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 import com.revature.model.Reservation;
 
 public class ReservationDao implements Dao<Reservation> {
+	private Connection connection;
 
-	@Override
-	public void create(Reservation obj) {
-		// TODO Auto-generated method stub
-		
+	/**
+	 * @param connection
+	 */
+	public ReservationDao(Connection connection) {
+		super();
+		this.connection = connection;
 	}
 
 	@Override
-	public Reservation read(int id) {
+	public void create(Reservation obj) throws SQLException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public Reservation read(int id) throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<Reservation> readAll() {
+	public List<Reservation> readAll() throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void update(Reservation obj) {
+	public void update(Reservation obj) throws SQLException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public void delete(Reservation obj) {
+	public void delete(Reservation obj) throws SQLException {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	public Connection getConnection() {
+		return connection;
+	}
+
+	public void setConnection(Connection connection) {
+		this.connection = connection;
 	}
 
 }
