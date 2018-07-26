@@ -38,15 +38,22 @@ public class Issue {
 	/**
 	 * @return the rez
 	 */
-	public Reservation getRez() {
+	public Reservation getReservation() {
 		return rez;
 	}
 
 	/**
 	 * @param rez the rez to set
 	 */
-	public void setRez(Reservation rez) {
+	public void setReservation(Reservation rez) {
 		this.rez = rez;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	/**
@@ -124,6 +131,80 @@ public class Issue {
 	 */
 	public int getId() {
 		return id;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((contents == null) ? 0 : contents.hashCode());
+		result = prime * result + ((guest == null) ? 0 : guest.hashCode());
+		result = prime * result + ((host == null) ? 0 : host.hashCode());
+		result = prime * result + id;
+		result = prime * result + (resolved ? 1231 : 1237);
+		result = prime * result + ((rez == null) ? 0 : rez.hashCode());
+		result = prime * result + ((title == null) ? 0 : title.hashCode());
+		return result;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Issue))
+			return false;
+		Issue other = (Issue) obj;
+		if (contents == null) {
+			if (other.contents != null)
+				return false;
+		} else if (!contents.equals(other.contents))
+			return false;
+		if (guest == null) {
+			if (other.guest != null)
+				return false;
+		} else if (!guest.equals(other.guest))
+			return false;
+		if (host == null) {
+			if (other.host != null)
+				return false;
+		} else if (!host.equals(other.host))
+			return false;
+		if (id != other.id)
+			return false;
+		if (resolved != other.resolved)
+			return false;
+		if (rez == null) {
+			if (other.rez != null)
+				return false;
+		} else if (!rez.equals(other.rez))
+			return false;
+		if (title == null) {
+			if (other.title != null)
+				return false;
+		} else if (!title.equals(other.title))
+			return false;
+		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Issue [id=" + id + ", rez=" + rez + ", guest=" + guest + ", host=" + host + ", title=" + title
+				+ ", contents=" + contents + ", resolved=" + resolved + "]";
 	}
 
 }

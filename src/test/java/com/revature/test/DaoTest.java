@@ -2,7 +2,8 @@ package com.revature.test;
 
 import static org.junit.Assert.*;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -57,7 +58,7 @@ public class DaoTest {
 			assertNull(dao.read(r2.getRoomNumber()));
 
 		} catch (SQLException e) {
-			fail(e.getMessage() + "\n" + e.getStackTrace());
+			fail(e.getMessage() + "\n" + e.getCause() + "\n" + e.getStackTrace());
 		} finally {
 			connection.rollback();
 			connection.close();
@@ -97,6 +98,8 @@ public class DaoTest {
 			// read updated hosts
 			assertEquals(h1, dao.read(h1.getId()));
 			assertEquals(h2, dao.read(h2.getId()));
+
+			// TODO test check/set password methods
 
 			// delete hosts
 			dao.delete(h1);
@@ -148,6 +151,8 @@ public class DaoTest {
 			assertEquals(g1, dao.read(g1.getId()));
 			assertEquals(g2, dao.read(g2.getId()));
 
+			// TODO password set/check methods
+
 			// delete guests
 			dao.delete(g1);
 			dao.delete(g2);
@@ -157,7 +162,7 @@ public class DaoTest {
 			assertNull(dao.read(g2.getId()));
 
 		} catch (SQLException e) {
-			fail(e.getMessage() + "\n" + e.getStackTrace());
+			fail(e.getMessage() + "\n" + e.getErrorCode() + "\n" + e.getStackTrace());
 		} finally {
 			connection.rollback();
 			connection.close();
@@ -177,10 +182,8 @@ public class DaoTest {
 		rdao.create(r2);
 
 		Host h1 = new Host(0, "albus.dumbledore", "Albus", "Dumbledore", "headmaster@hogwarts.edu");
-		Host h2 = new Host(0, "hyrum.graff", "Hyrum", "Graff", "hgraff@fleet.gov");
 		HostDao hdao = new HostDao(connection);
 		hdao.create(h1);
-		hdao.create(h2);
 
 		Guest g1 = new Guest(0, "harry.potter", "Harry", "Potter", "harry.potter@hogwarts.edu");
 		Guest g2 = new Guest(0, "andrew.wiggins", "Andrew", "Wiggins", "ender@fleet.gov");
@@ -190,11 +193,8 @@ public class DaoTest {
 
 		Reservation rez1 = new Reservation(0, g1, r1, h1, LocalDate.of(2018, 10, 15), LocalDate.of(2018, 10, 22),
 				false);
-		Reservation rez2 = new Reservation(0, g2, r2, h2, LocalDate.of(2018, 11, 15), LocalDate.of(2018, 11, 22),
-				false);
-		ReservationDao rezdao = new ReservationDao(connection);
-		rezdao.create(rez1);
-		rezdao.create(rez2);
+		Reservation rez2 = new Reservation(0, g2, r2, null, LocalDate.of(2018, 11, 15), LocalDate.of(2018, 11, 22),
+				true);
 
 		ArrayList<Reservation> reservations = new ArrayList<Reservation>();
 		reservations.add(rez1);
@@ -216,7 +216,7 @@ public class DaoTest {
 
 			// update reservations
 			rez1.setCheckin(LocalDate.of(2018, 10, 7));
-			rez1.setCheckin(LocalDate.of(2018, 11, 7));
+			rez2.setCheckin(LocalDate.of(2018, 11, 7));
 			dao.update(rez1);
 			dao.update(rez2);
 
@@ -253,10 +253,8 @@ public class DaoTest {
 		rdao.create(r2);
 
 		Host h1 = new Host(0, "albus.dumbledore", "Albus", "Dumbledore", "headmaster@hogwarts.edu");
-		Host h2 = new Host(0, "hyrum.graff", "Hyrum", "Graff", "hgraff@fleet.gov");
 		HostDao hdao = new HostDao(connection);
 		hdao.create(h1);
-		hdao.create(h2);
 
 		Guest g1 = new Guest(0, "harry.potter", "Harry", "Potter", "harry.potter@hogwarts.edu");
 		Guest g2 = new Guest(0, "andrew.wiggins", "Andrew", "Wiggins", "ender@fleet.gov");
@@ -266,15 +264,15 @@ public class DaoTest {
 
 		Reservation rez1 = new Reservation(0, g1, r1, h1, LocalDate.of(2018, 10, 15), LocalDate.of(2018, 10, 22),
 				false);
-		Reservation rez2 = new Reservation(0, g2, r2, h2, LocalDate.of(2018, 11, 15), LocalDate.of(2018, 11, 22),
+		Reservation rez2 = new Reservation(0, g2, r2, null, LocalDate.of(2018, 11, 15), LocalDate.of(2018, 11, 22),
 				false);
 		ReservationDao rezdao = new ReservationDao(connection);
 		rezdao.create(rez1);
 		rezdao.create(rez2);
-		
-		Issue i1 = new Issue(0, rez1, g1, h1, "Rooms Keep Moving", "The rooms keep moving from their previous position. Is there any way to make this place static?", false);
-		Issue i2 = new Issue(0, rez2, g2, h2, "Buggers", "There are bugs in the bed!", true);
-		
+
+		Issue i1 = new Issue(0, rez1, g1, h1, "Moving rooms", "The rooms keep moving around!", false);
+		Issue i2 = new Issue(0, rez2, g2, null, "Buggers", "There are bugs in the bed!", true);
+
 		ArrayList<Issue> issues = new ArrayList<Issue>();
 		issues.add(i1);
 		issues.add(i2);

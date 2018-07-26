@@ -49,4 +49,42 @@ public class Room {
 		this.roomNumber = roomNumber;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + roomNumber;
+		result = prime * result + ((roomPic == null) ? 0 : roomPic.hashCode());
+		return result;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Room))
+			return false;
+		Room other = (Room) obj;
+		if (roomNumber != other.roomNumber)
+			return false;
+		if (roomPic == null) {
+			if (other.roomPic != null)
+				return false;
+		} else if (!roomPic.equals(other.roomPic))
+			return false;
+		return true;
+	}
+
 }
