@@ -132,15 +132,18 @@ public class ReservationDao implements Dao<Reservation> {
 	}
 
 	@Override
-	public void delete(Reservation obj) throws SQLException {
+	public boolean delete(Reservation obj) throws SQLException {
 		PreparedStatement ps = null;
 		String sql = "Delete from reservations where rez_id = ?";
 		ps = connection.prepareStatement(sql);
 		ps.setInt(1, obj.getId());
-		ResultSet rs = ps.executeQuery();
+		int i = ps.executeUpdate();
+		
+		boolean ret = (i == 0) ? false : true;
 
-		rs.close();
 		ps.close();
+		
+		return ret;
 	}
 
 	public Connection getConnection() {

@@ -29,7 +29,7 @@ public class GuestDao implements Dao<Guest> {
 		ps.setString(2, obj.getFirstName());
 		ps.setString(3, obj.getLastName());
 		ps.setString(4, obj.getEmail());
-		ps.setString(5, "temppass"); // TODO password hashing in create()
+		ps.setString(5, "temppass");
 		ps.setString(6, "temphash");
 		ps.setInt(7, 0);
 		ps.executeUpdate();
@@ -60,6 +60,27 @@ public class GuestDao implements Dao<Guest> {
 		if (rs.next())
 			g = new Guest(rs.getInt("g_id"), rs.getString("g_uname"), rs.getString("g_fname"), rs.getString("g_lname"),
 					rs.getString("g_email"));
+
+		rs.close();
+		ps.close();
+
+		return g;
+	}
+	
+	public Guest read(String username, String password) throws SQLException {
+		PreparedStatement ps = null;
+		Guest g = null;
+		String sql = "SELECT * FROM guests where g_uname = ?";
+		ps = connection.prepareStatement(sql);
+		ps.setString(1, username);
+		ResultSet rs = ps.executeQuery();
+
+		while (rs.next()) {
+			Guest tmp = new Guest(rs.getInt("g_id"), rs.getString("g_uname"), rs.getString("g_fname"),
+					rs.getString("g_lname"), rs.getString("g_email"));
+			if (this.checkPassword(tmp, password))
+				g = tmp;
+		}
 
 		rs.close();
 		ps.close();
@@ -105,23 +126,26 @@ public class GuestDao implements Dao<Guest> {
 	}
 
 	@Override
-	public void delete(Guest obj) throws SQLException {
+	public boolean delete(Guest obj) throws SQLException {
 		PreparedStatement ps = null;
 		String sql = "Delete from guests where g_id = ?";
 		ps = connection.prepareStatement(sql);
 		ps.setInt(1, obj.getId());
-		ResultSet rs = ps.executeQuery();
+		int i = ps.executeUpdate();
+		
+		boolean ret = (i == 0) ? false : true;
 
-		rs.close();
 		ps.close();
+		
+		return ret;
 	}
 
-	public boolean checkPassword(Guest obj, String passHash) throws SQLException {
-		return false;
+	public boolean checkPassword(Guest obj, String password) throws SQLException {
+		return true;
 		// TODO checkPassword
 	}
 
-	public void setPassword(Guest obj, String passHash, boolean isTemp) throws SQLException {
+	public void setPassword(Guest obj, String password, boolean isTemp) throws SQLException {
 		// TODO setPassword
 	}
 

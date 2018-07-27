@@ -67,6 +67,27 @@ public class HostDao implements Dao<Host> {
 		return h;
 	}
 
+	public Host read(String username, String password) throws SQLException {
+		PreparedStatement ps = null;
+		Host h = null;
+		String sql = "SELECT * FROM hosts where h_uname = ?";
+		ps = connection.prepareStatement(sql);
+		ps.setString(1, username);
+		ResultSet rs = ps.executeQuery();
+
+		while (rs.next()) {
+			Host tmp = new Host(rs.getInt("h_id"), rs.getString("h_uname"), rs.getString("h_fname"),
+					rs.getString("h_lname"), rs.getString("h_email"));
+			if (this.checkPassword(tmp, password))
+				h = tmp;
+		}
+
+		rs.close();
+		ps.close();
+
+		return h;
+	}
+
 	@Override
 	public List<Host> readAll() throws SQLException {
 		PreparedStatement ps = null;
@@ -105,20 +126,27 @@ public class HostDao implements Dao<Host> {
 	}
 
 	@Override
-	public void delete(Host obj) throws SQLException {
+	public boolean delete(Host obj) throws SQLException {
 		PreparedStatement ps = null;
 		String sql = "Delete from hosts where h_id = ?";
 		ps = connection.prepareStatement(sql);
 		ps.setInt(1, obj.getId());
-		ResultSet rs = ps.executeQuery();
+		int i = ps.executeUpdate();
 
-		rs.close();
+		boolean ret = (i == 0) ? false : true;
+
 		ps.close();
+
+		return ret;
 	}
 
 	public boolean checkPassword(Host obj, String passHash) throws SQLException {
-		return false;
+		return true;
 		// TODO checkPassword
+	}
+	
+	public void setPassword(Host obj, String password) throws SQLException {
+		// TODO setPassword
 	}
 
 	public Connection getConnection() {

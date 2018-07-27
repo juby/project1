@@ -1,4 +1,4 @@
-package com.revature.test;
+package com.revature.dao;
 
 import static org.junit.Assert.*;
 
@@ -9,7 +9,6 @@ import java.util.*;
 
 import org.junit.Test;
 
-import com.revature.dao.*;
 import com.revature.model.*;
 import com.revature.util.ConnectionUtil;
 

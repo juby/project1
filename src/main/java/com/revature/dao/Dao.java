@@ -9,7 +9,7 @@ import java.util.List;
  *
  * @param <T> The type of object this DAO will be handling
  */
-interface Dao<T> {
+public interface Dao<T> {
 	void create(T obj) throws SQLException;
 
 	T read(int id) throws SQLException;
@@ -18,5 +18,5 @@ interface Dao<T> {
 
 	void update(T obj) throws SQLException;
 
-	void delete(T obj) throws SQLException;
+	boolean delete(T obj) throws SQLException;
 }

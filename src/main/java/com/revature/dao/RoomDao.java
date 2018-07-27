@@ -91,16 +91,19 @@ public class RoomDao implements Dao<Room> {
 	}
 
 	@Override
-	public void delete(Room obj) throws SQLException {
+	public boolean delete(Room obj) throws SQLException {
 		PreparedStatement ps = null;
 
 		String sql = "Delete from rooms where rm_id=?";
 		ps = connection.prepareStatement(sql);
 		ps.setInt(1, obj.getRoomNumber());
-		ResultSet rs = ps.executeQuery();
+		int i = ps.executeUpdate();
+		
+		boolean ret = (i == 0) ? false : true;
 
-		rs.close();
 		ps.close();
+		
+		return ret;
 	}
 
 	public Connection getConnection() {

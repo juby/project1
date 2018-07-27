@@ -129,14 +129,18 @@ public class IssueDao implements Dao<Issue> {
 	}
 
 	@Override
-	public void delete(Issue obj) throws SQLException {
+	public boolean delete(Issue obj) throws SQLException {
 		PreparedStatement ps = null;
 		String sql = "Delete from issues where i_id = ?";
 		ps = connection.prepareStatement(sql);
 		ps.setInt(1, obj.getId());
-		ps.executeQuery();
+		int i = ps.executeUpdate();
+		
+		boolean ret = (i == 1) ? true : false;
 
 		ps.close();
+		
+		return ret;
 	}
 
 	public Connection getConnection() {

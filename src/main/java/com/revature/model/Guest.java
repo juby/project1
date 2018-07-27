@@ -13,7 +13,6 @@ public class Guest {
 
 	/**
 	 * @param id
-	 * @param iterations
 	 * @param userName
 	 * @param firstName
 	 * @param lastName
