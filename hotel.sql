@@ -86,6 +86,20 @@ CREATE TABLE rooms(
     CONSTRAINT pk_rooms PRIMARY KEY (rm_id)
 );
 
+CREATE TABLE guest_sessions(
+	gs_id NUMBER NOT NULL,
+	gs_userid NUMBER NOT NULL,
+	gs_expires DATE NOT NULL,
+    CONSTRAINT pk_guest_sessions PRIMARY KEY (gs_id)
+);
+
+CREATE TABLE host_sessions(
+	hs_id NUMBER NOT NULL,
+	hs_userid NUMBER NOT NULL,
+	hs_expires DATE NOT NULL,
+    CONSTRAINT pk_host_sessions PRIMARY KEY (hs_id)
+);
+
 /*******************************************************************************
    Create Foreign Keys
 ********************************************************************************/
@@ -109,6 +123,14 @@ ALTER TABLE reservations ADD CONSTRAINT fk_rez_roomid
 ALTER TABLE reservations ADD CONSTRAINT fk_rez_hostid
     FOREIGN KEY (rez_hostid) REFERENCES hosts (h_id);
     
+ALTER TABLE guest_sessions ADD CONSTRAINT fk_guest_session_userid
+    FOREIGN KEY (gs_userid) REFERENCES guests (g_id)
+    ON DELETE CASCADE;
+    
+ALTER TABLE host_sessions ADD CONSTRAINT fk_host_session_userid
+    FOREIGN KEY (hs_userid) REFERENCES hosts (h_id)
+    ON DELETE CASCADE;
+    
 /*******************************************************************************
    SEQUENCES & TRIGGERS
 ********************************************************************************/
@@ -116,6 +138,8 @@ CREATE SEQUENCE sq_guests_pk START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE sq_hosts_pk START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE sq_issues_pk START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE sq_reservations_pk START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE sq_host_sessions_pk START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE sq_guest_sessions_pk START WITH 1 INCREMENT BY 1;
 
 CREATE OR REPLACE TRIGGER tr_insert_guest
 BEFORE INSERT ON guests
@@ -146,6 +170,22 @@ BEFORE INSERT ON reservations
 FOR EACH ROW
 BEGIN
     SELECT sq_reservations_pk.NEXTVAL INTO :NEW.rez_id FROM DUAL;
+END;
+/
+
+CREATE OR REPLACE TRIGGER tr_host_sessions_rez
+BEFORE INSERT ON host_sessions
+FOR EACH ROW
+BEGIN
+    SELECT sq_host_sessions_pk.NEXTVAL INTO :NEW.hs_id FROM DUAL;
+END;
+/
+
+CREATE OR REPLACE TRIGGER tr_guest_sessions_rez
+BEFORE INSERT ON guest_sessions
+FOR EACH ROW
+BEGIN
+    SELECT sq_guest_sessions_pk.NEXTVAL INTO :NEW.gs_id FROM DUAL;
 END;
 /
 

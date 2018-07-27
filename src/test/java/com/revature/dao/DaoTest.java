@@ -88,6 +88,14 @@ public class DaoTest {
 			// read all hosts
 			assertEquals(hosts, dao.readAll());
 
+			//create sessions
+			dao.makeSession(h1);
+			dao.makeSession(h2);
+			
+			//check sessions
+			assertTrue(dao.hasSession(h1));
+			assertTrue(dao.hasSession(h2));
+			
 			// update hosts
 			h1.setEmail("fake@example.org");
 			h2.setEmail("anotherfake@example.org");
@@ -139,6 +147,14 @@ public class DaoTest {
 
 			// read all guests
 			assertEquals(guests, dao.readAll());
+			
+			//create sessions
+			dao.makeSession(g1);
+			dao.makeSession(g2);
+			
+			//check sessions
+			assertTrue(dao.hasSession(g1));
+			assertTrue(dao.hasSession(g2));
 
 			// update guests
 			g1.setEmail("fake@example.org");
