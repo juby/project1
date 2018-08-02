@@ -8,4 +8,5 @@ public interface UserDao<T> extends Dao<T> {
 	public int makeSession(T user) throws SQLException;
 	public void create(T user) throws SQLException;
 	public boolean delete(T user) throws SQLException;
+	public void clearSessions(T user) throws SQLException;
 }

@@ -39,8 +39,9 @@ public class GuestDao implements UserDao<Guest> {
 		sql = "SELECT sq_guests_pk.CURRVAL FROM dual";
 		ps = connection.prepareStatement(sql);
 		ResultSet rs = ps.executeQuery();
-				
-		if(!rs.next()) throw new SQLException("Data was not added");
+
+		if (!rs.next())
+			throw new SQLException("Data was not added");
 		else {
 			int id = rs.getInt(1);
 			obj.setId(id);
@@ -68,7 +69,7 @@ public class GuestDao implements UserDao<Guest> {
 
 		return g;
 	}
-	
+
 	public Guest read(String username, String password) throws SQLException {
 		PreparedStatement ps = null;
 		Guest g = null;
@@ -134,11 +135,11 @@ public class GuestDao implements UserDao<Guest> {
 		ps = connection.prepareStatement(sql);
 		ps.setInt(1, obj.getId());
 		int i = ps.executeUpdate();
-		
+
 		boolean ret = (i == 0) ? false : true;
 
 		ps.close();
-		
+
 		return ret;
 	}
 
@@ -163,7 +164,7 @@ public class GuestDao implements UserDao<Guest> {
 	public boolean hasSession(Guest user) throws SQLException {
 		PreparedStatement ps = null;
 		ArrayList<Integer> expired = new ArrayList<Integer>();
-		
+
 		String sql = "Select * from guest_sessions where gs_userid = ?";
 		ps = connection.prepareStatement(sql);
 		ps.setInt(1, user.getId());
@@ -176,14 +177,14 @@ public class GuestDao implements UserDao<Guest> {
 				ret = true;
 			}
 		}
-		
+
 		// clean up expired sessions
-		for(int id : expired) {
+		for (int id : expired) {
 			ps = connection.prepareStatement("Delete from guest_sessions where gs_id = ?");
 			ps.setInt(1, id);
 			ps.executeUpdate();
 		}
-		
+
 		return ret;
 	}
 
@@ -196,5 +197,13 @@ public class GuestDao implements UserDao<Guest> {
 		ps.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now().plusMinutes(10)));
 		return ps.executeUpdate();
 	}
-	
+
+	@Override
+	public void clearSessions(Guest user) throws SQLException {
+		String sql = "Delete from guest_sessions where gs_userid = ?";
+		PreparedStatement ps = connection.prepareStatement(sql);
+		ps.setInt(1, user.getId());
+		ps.executeUpdate();
+	}
+
 }

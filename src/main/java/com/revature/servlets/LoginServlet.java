@@ -14,8 +14,8 @@ import javax.servlet.http.HttpSession;
 
 import com.revature.controller.GuestController;
 import com.revature.controller.HostController;
-import com.revature.model.Guest;
-import com.revature.model.Host;
+import com.revature.controller.UserController;
+import com.revature.model.User;
 import com.revature.util.ConnectionUtil;
 
 /**
@@ -46,109 +46,69 @@ public class LoginServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
+	@SuppressWarnings("rawtypes")
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+
+		// Instantiate all of our general purpose variables
+		String username = request.getParameter("username");
+		String password = request.getParameter("password");
+		String type = request.getParameter("type");
+		User user = null;
+		UserController controller = null;
+		Cookie tempCookie = null;
 		HttpSession session = request.getSession();
+
 		try (Connection connection = ConnectionUtil.getConnection()) {
-			// Get the post information
-			String username = request.getParameter("username");
-			String password = request.getParameter("password");
-			String type = request.getParameter("type");
-
+			// Instantiate the proper controller
 			if (type.equals("host")) {
-				// attempt to log the guest in
-				HostController controller = new HostController(connection);
-				Host h = controller.login(username, password);
-				Cookie cookie = null;
-
-				// login successful
-				if (h != null) {
-					session.setAttribute("user", h);
-					boolean cookieChanged = false;
-					Cookie[] cookies = request.getCookies();
-					if(cookies != null) {
-						for (Cookie loop : cookies) {
-							if (loop.getName().equals("login") && loop.getValue().equals("bad")) {
-								loop.setValue("good");
-								response.addCookie(loop);
-								cookieChanged = true;
-							}
-						}
-					}
-					if (!cookieChanged) {
-						cookie = new Cookie("login", "good");
-						response.addCookie(cookie);
-					}
-					response.sendRedirect("home");
-				}
-				// login failed
-				else {
-					boolean cookieChanged = false;
-					Cookie[] cookies = request.getCookies();
-					if(cookies != null) {
-						for (Cookie loop : cookies) {
-							if (loop.getName().equals("login") && loop.getValue().equals("good")) {
-								loop.setValue("bad");
-								response.addCookie(loop);
-								cookieChanged = true;
-							}
-						}
-					}
-					if (!cookieChanged) {
-						cookie = new Cookie("login", "bad");
-						response.addCookie(cookie);
-					}
-					RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/login.html");
-					dispatcher.forward(request, response);
-				}
+				controller = new HostController(connection);
 			} else if (type.equals("guest")) {
-				// attempt to log the guest in
-				GuestController controller = new GuestController(connection);
-				Guest h = controller.login(username, password);
-				Cookie cookie = null;
+				controller = new GuestController(connection);
+			}
 
-				// login successful
-				if (h != null) {
-					session.setAttribute("user", h);
-					boolean cookieChanged = false;
+			// Log the user in
+			user = controller.login(username, password);
 
-					Cookie[] cookies = request.getCookies();
-					if(cookies != null) {
-						for (Cookie loop : cookies) {
-							if (loop.getName().equals("login") && loop.getValue().equals("bad")) {
-								loop.setValue("good");
-								response.addCookie(loop);
-								cookieChanged = true;
-							}
+			// login successful
+			if (user != null) {
+				session.setAttribute("user", user);
+				boolean cookieChanged = false;
+				Cookie[] cookies = request.getCookies();
+				if (cookies != null) {
+					for (Cookie cookie : cookies) {
+						if (cookie.getName().equals("login") && cookie.getValue().equals("bad")) {
+							cookie.setValue("good");
+							response.addCookie(cookie);
+							cookieChanged = true;
 						}
 					}
-					if (!cookieChanged) {
-						cookie = new Cookie("login", "good");
-						response.addCookie(cookie);
-					}
-					response.sendRedirect("home");
-
 				}
-				// login failed
-				else {
-					boolean cookieChanged = false;
-					Cookie[] cookies = request.getCookies();
-					if(cookies != null) {
-						for (Cookie loop : cookies) {
-							if (loop.getName().equals("login") && loop.getValue().equals("good")) {
-								loop.setValue("bad");
-								response.addCookie(loop);
-								cookieChanged = true;
-							}
+				if (!cookieChanged) {
+					tempCookie = new Cookie("login", "good");
+					response.addCookie(tempCookie);
+				}
+				response.sendRedirect("home");
+			}
+			// login failed
+			else {
+				boolean cookieChanged = false;
+				Cookie[] cookies = request.getCookies();
+				if (cookies != null) {
+					for (Cookie cookie : cookies) {
+						if (cookie.getName().equals("login") && cookie.getValue().equals("good")) {
+							cookie.setValue("bad");
+							response.addCookie(cookie);
+							cookieChanged = true;
 						}
 					}
-					if (!cookieChanged) {
-						cookie = new Cookie("login", "bad");
-						response.addCookie(cookie);
-					}
-					RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/login.html");
-					dispatcher.forward(request, response);
 				}
+				if (!cookieChanged) {
+					tempCookie = new Cookie("login", "bad");
+					response.addCookie(tempCookie);
+				}
+				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/login.html");
+				dispatcher.forward(request, response);
 			}
 			connection.close();
 		} catch (SQLException e) {

@@ -40,4 +40,9 @@ public class GuestController extends UserController<Guest> {
 			   userdao.hasSession(user);
 	}
 
+	@Override
+	public void logout(Guest user) throws SQLException {
+		userdao.clearSessions(user);
+	}
+
 }

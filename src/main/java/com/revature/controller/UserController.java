@@ -4,8 +4,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import com.revature.dao.*;
+import com.revature.model.User;
 
-abstract class UserController<T> {
+public abstract class UserController<T extends User> {
 	protected Connection connection;
 	protected UserDao<T> userdao;
 
@@ -23,5 +24,6 @@ abstract class UserController<T> {
 	public abstract T createUser(String username, String firstname, String lastname, String email, String password) throws SQLException;
 	public abstract boolean deleteUser(T user) throws SQLException;
 	public abstract boolean validate(T user) throws SQLException;
+	public abstract void logout(T user) throws SQLException;
 
 }

@@ -46,4 +46,9 @@ public class HostController extends UserController<Host> {
 				userdao.hasSession(user);
 	}
 
+	@Override
+	public void logout(Host user) throws SQLException {
+		userdao.clearSessions(user);
+	}
+
 }

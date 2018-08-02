@@ -14,8 +14,10 @@ import javax.servlet.http.HttpSession;
 
 import com.revature.controller.GuestController;
 import com.revature.controller.HostController;
+import com.revature.controller.UserController;
 import com.revature.model.Guest;
 import com.revature.model.Host;
+import com.revature.model.User;
 import com.revature.util.ConnectionUtil;
 
 /**
@@ -36,51 +38,44 @@ public class HomeServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// Get session info
 		HttpSession session = request.getSession();
 		RequestDispatcher dispatcher = null;
 		boolean dash = false;
+		User user = (User) session.getAttribute("user");
+		UserController controller = null;
 
 		try (Connection connection = ConnectionUtil.getConnection()) {
 			// if there is a user session
-			if (session.getAttribute("user") != null) {
-				// perform a series of checks to make sure this is a valid user
-				// and that the valid user actually has a current session
-				if (session.getAttribute("user") instanceof Guest) {
-					Guest user = (Guest) session.getAttribute("user");
-					GuestController controller = new GuestController(connection);
-
-					// if session is valid, forward to the dashboard
-					if (controller.validate(user)) {
-						dispatcher = getServletContext().getRequestDispatcher("/dashboard");
-						dispatcher.forward(request, response);
-						dash = true;
-					}
-				} else if (session.getAttribute("user") instanceof Host) {
-					Host user = (Host) session.getAttribute("user");
-					HostController controller = new HostController(connection);
-
-					// session is valid, forward to the dashboard
-					if (controller.validate(user)) {
-						dispatcher = getServletContext().getRequestDispatcher("/dashboard");
-						dispatcher.forward(request, response);
-						dash = true;
-					}
+			if (user != null) {
+				//The user is not null, so we can instantiate the proper controller
+				if(user instanceof Host) controller = new HostController(connection);
+				else if(user instanceof Guest) controller = new GuestController(connection);
+				
+				//Validate the user and their session
+				//Note that we make sure the controller has been instantiated.
+				//Not sure how this *couldn't* happen, but it never hurts to cya
+				if (controller != null && controller.validate(user)) {
+					dispatcher = getServletContext().getRequestDispatcher("/dashboard");
+					dispatcher.forward(request, response);
+					dash = true;
 				}
 			}
 
 			// if any of those various checks fail, redirect to the login screen
-			if (!dash){
+			if (!dash) {
 				Cookie[] cookies = request.getCookies();
-				for(Cookie cookie : cookies) {
-					if(cookie.getName().equals("login")) response.addCookie(new Cookie("login", ""));
+				for (Cookie cookie : cookies) {
+					if (cookie.getName().equals("login"))
+						response.addCookie(new Cookie("login", ""));
 				}
 				dispatcher = getServletContext().getRequestDispatcher("/login");
 				dispatcher.forward(request, response);
 			}
-			
+
 			connection.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

@@ -196,4 +196,12 @@ public class HostDao implements UserDao<Host> {
 		ps.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now().plusMinutes(10)));
 		return ps.executeUpdate();
 	}
+
+	@Override
+	public void clearSessions(Host user) throws SQLException {
+		String sql = "Delete from host_sessions where hs_userid = ?";
+		PreparedStatement ps = connection.prepareStatement(sql);
+		ps.setInt(1, user.getId());
+		ps.executeUpdate();
+	}
 }
