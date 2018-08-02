@@ -150,4 +150,15 @@ public class Host {
 		this.id = id;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Host [id=" + id + ", userName=" + userName + ", firstName=" + firstName + ", lastName=" + lastName
+				+ ", email=" + email + "]";
+	}
+	
+	
+
 }

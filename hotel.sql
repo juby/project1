@@ -89,14 +89,14 @@ CREATE TABLE rooms(
 CREATE TABLE guest_sessions(
 	gs_id NUMBER NOT NULL,
 	gs_userid NUMBER NOT NULL,
-	gs_expires DATE NOT NULL,
+	gs_expires TIMESTAMP NOT NULL,
     CONSTRAINT pk_guest_sessions PRIMARY KEY (gs_id)
 );
 
 CREATE TABLE host_sessions(
 	hs_id NUMBER NOT NULL,
 	hs_userid NUMBER NOT NULL,
-	hs_expires DATE NOT NULL,
+	hs_expires TIMESTAMP NOT NULL,
     CONSTRAINT pk_host_sessions PRIMARY KEY (hs_id)
 );
 
@@ -192,7 +192,7 @@ END;
 /*******************************************************************************
    INITIALIZE DATA
 ********************************************************************************/
-/*
+
 Insert into rooms values (101, NULL);
 Insert into rooms values (102, NULL);
 Insert into rooms values (103, NULL);
@@ -208,4 +208,5 @@ Insert into rooms values (302, NULL);
 Insert into rooms values (303, NULL);
 Insert into rooms values (304, NULL);
 Insert into rooms values (305, NULL);
-*/
+
+Insert into hosts values (41, 'jubydoo', 'Andrew', 'Juby', 'jubydoo@gmail.com', 'tmppass', 'tmpsalt');

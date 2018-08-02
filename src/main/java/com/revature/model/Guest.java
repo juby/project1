@@ -16,6 +16,7 @@ public class Guest {
 	 * @param userName
 	 * @param firstName
 	 * @param lastName
+	 * @param email
 	 */
 	public Guest(int id, String userName, String firstName, String lastName, String email) {
 		super();

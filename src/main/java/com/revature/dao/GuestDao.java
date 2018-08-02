@@ -11,7 +11,7 @@ import java.util.List;
 
 import com.revature.model.Guest;
 
-public class GuestDao implements Dao<Guest>, User<Guest> {
+public class GuestDao implements UserDao<Guest> {
 	private Connection connection;
 
 	/**
@@ -161,33 +161,40 @@ public class GuestDao implements Dao<Guest>, User<Guest> {
 
 	@Override
 	public boolean hasSession(Guest user) throws SQLException {
-		PreparedStatement ps = null, ps2 = null;
-		String sql = "Select * from guest_sessions where gs_userid = ?";
+		PreparedStatement ps = null;
+		ArrayList<Integer> expired = new ArrayList<Integer>();
+		
+		String sql = "Select * from guest_sessions where hs_userid = ?";
 		ps = connection.prepareStatement(sql);
 		ps.setInt(1, user.getId());
 		ResultSet rs = ps.executeQuery();
 		boolean ret = false;
-		while(rs.next()) {
-			if(rs.getTimestamp("gs_expires").toLocalDateTime().isBefore(LocalDateTime.now())) {
-				//clean up expired sessions
-				ps2 = connection.prepareStatement("Delete from guest_sessions where hs_id = ?");
-				ps2.setInt(1, rs.getInt("gs_id"));
-				ps.executeUpdate();
+		while (rs.next()) {
+			if (rs.getTimestamp("hs_expires").toLocalDateTime().isBefore(LocalDateTime.now())) {
+				expired.add(rs.getInt("hs_id"));
 			} else {
 				ret = true;
 			}
 		}
+		
+		// clean up expired sessions
+		for(int id : expired) {
+			ps = connection.prepareStatement("Delete from guest_sessions where hs_id = ?");
+			ps.setInt(1, id);
+			ps.executeUpdate();
+		}
+		
 		return ret;
 	}
 
 	@Override
-	public void makeSession(Guest user) throws SQLException {
+	public int makeSession(Guest user) throws SQLException {
 		PreparedStatement ps = null;
 		String sql = "Insert into guest_sessions (gs_userid, gs_expires) values (?, ?)";
 		ps = connection.prepareStatement(sql);
 		ps.setInt(1, user.getId());
 		ps.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now().plusMinutes(10)));
-		ps.executeUpdate();
+		return ps.executeUpdate();
 	}
 	
 }

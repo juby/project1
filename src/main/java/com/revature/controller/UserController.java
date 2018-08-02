@@ -9,7 +9,7 @@ abstract class UserController<T> {
 	@SuppressWarnings("unused")
 	protected Connection connection;
 	@SuppressWarnings("unused")
-	protected Dao<T> userdao;
+	protected UserDao<T> userdao;
 
 	/**
 	 * Connects to a persistent data source using the specified connection object.
@@ -24,5 +24,6 @@ abstract class UserController<T> {
 	public abstract T login(String username, String password) throws SQLException;
 	public abstract T createUser(String username, String firstname, String lastname, String email, String password) throws SQLException;
 	public abstract boolean deleteUser(T user) throws SQLException;
+	public abstract boolean validate(T user) throws SQLException;
 
 }
