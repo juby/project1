@@ -3,9 +3,11 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Insert title here</title>
+<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
 	<h1>Revature Hotel</h1>
+	<div id="alert">Invalid username or password. Try again.</div>
 	<form action="login" method="POST">
 		<div class="field">
 			User name <input type="text" name="username">
@@ -20,4 +22,12 @@
 		<input type="submit" value="Log in">
 	</form>
 </body>
+
+<script src="javascript/cookies.js"></script>
+<script>
+if(getCookie("login") == "bad"){
+	document.getElementById("alert").style.display = "block";
+}
+</script>
+
 </html>

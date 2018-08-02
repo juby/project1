@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -74,14 +75,13 @@ public class HomeServlet extends HttpServlet {
 
 			// if any of those various checks fail, redirect to the login screen
 			if (!dash){
+				Cookie[] cookies = request.getCookies();
+				for(Cookie cookie : cookies) {
+					if(cookie.getName().equals("login")) response.addCookie(new Cookie("login", ""));
+				}
 				dispatcher = getServletContext().getRequestDispatcher("/login");
 				dispatcher.forward(request, response);
 			}
-			/*
-			 * String out = "isUser = " + isUser + "\n" + "isGuest = " + isGuest + "\n" +
-			 * "isHost = " + isHost + "\n" + "isValid = " + isValid;
-			 * response.getWriter().append(out);
-			 */
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			response.getWriter().append(e.getMessage());

@@ -164,14 +164,14 @@ public class GuestDao implements UserDao<Guest> {
 		PreparedStatement ps = null;
 		ArrayList<Integer> expired = new ArrayList<Integer>();
 		
-		String sql = "Select * from guest_sessions where hs_userid = ?";
+		String sql = "Select * from guest_sessions where gs_userid = ?";
 		ps = connection.prepareStatement(sql);
 		ps.setInt(1, user.getId());
 		ResultSet rs = ps.executeQuery();
 		boolean ret = false;
 		while (rs.next()) {
-			if (rs.getTimestamp("hs_expires").toLocalDateTime().isBefore(LocalDateTime.now())) {
-				expired.add(rs.getInt("hs_id"));
+			if (rs.getTimestamp("gs_expires").toLocalDateTime().isBefore(LocalDateTime.now())) {
+				expired.add(rs.getInt("gs_id"));
 			} else {
 				ret = true;
 			}
@@ -179,7 +179,7 @@ public class GuestDao implements UserDao<Guest> {
 		
 		// clean up expired sessions
 		for(int id : expired) {
-			ps = connection.prepareStatement("Delete from guest_sessions where hs_id = ?");
+			ps = connection.prepareStatement("Delete from guest_sessions where gs_id = ?");
 			ps.setInt(1, id);
 			ps.executeUpdate();
 		}

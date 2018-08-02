@@ -209,4 +209,5 @@ Insert into rooms values (303, NULL);
 Insert into rooms values (304, NULL);
 Insert into rooms values (305, NULL);
 
-Insert into hosts values (41, 'jubydoo', 'Andrew', 'Juby', 'jubydoo@gmail.com', 'tmppass', 'tmpsalt');
+Insert into hosts values (1, 'albus', 'Albus', 'Dumbledore', 'headmaster@hogwarts.edu', 'tmppass', 'tmpsalt');
+Insert into guests values (1, 'harry', 'Harry', 'Potter', 'harry.potter@hogwarts.edu', 'tmppass', 'tmpsalt', 0);
