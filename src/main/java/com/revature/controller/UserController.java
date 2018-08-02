@@ -6,9 +6,7 @@ import java.sql.SQLException;
 import com.revature.dao.*;
 
 abstract class UserController<T> {
-	@SuppressWarnings("unused")
 	protected Connection connection;
-	@SuppressWarnings("unused")
 	protected UserDao<T> userdao;
 
 	/**

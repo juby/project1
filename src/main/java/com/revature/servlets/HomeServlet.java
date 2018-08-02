@@ -44,8 +44,6 @@ public class HomeServlet extends HttpServlet {
 		boolean dash = false;
 
 		try (Connection connection = ConnectionUtil.getConnection()) {
-			connection.setAutoCommit(false);
-
 			// if there is a user session
 			if (session.getAttribute("user") != null) {
 				// perform a series of checks to make sure this is a valid user
@@ -82,6 +80,8 @@ public class HomeServlet extends HttpServlet {
 				dispatcher = getServletContext().getRequestDispatcher("/login");
 				dispatcher.forward(request, response);
 			}
+			
+			connection.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			response.getWriter().append(e.getMessage());
