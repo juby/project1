@@ -10,12 +10,6 @@ public class Reservation {
 	private LocalDate checkin, checkout;
 	private boolean approved;
 
-	/**
-	 * 
-	 */
-	public Reservation() {
-		super();
-	}
 
 	/**
 	 * @param id
