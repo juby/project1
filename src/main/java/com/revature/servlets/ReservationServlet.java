@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import com.revature.dao.ReservationDao;
 import com.revature.dao.RoomDao;
 import com.revature.model.Guest;
+import com.revature.model.Host;
 import com.revature.model.Reservation;
 import com.revature.model.Room;
 import com.revature.util.ConnectionUtil;
@@ -44,6 +45,10 @@ public class ReservationServlet extends HttpServlet {
 		if (request.getSession().getAttribute("user") instanceof Guest) {
 			request.getSession(true);
 			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/reservations.html");
+			dispatcher.forward(request, response);
+		} else if (request.getSession().getAttribute("user") instanceof Host){
+			request.getSession(true);
+			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/rezmanager.html");
 			dispatcher.forward(request, response);
 		} else {
 			response.sendRedirect("home");
