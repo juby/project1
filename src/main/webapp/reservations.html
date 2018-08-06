@@ -16,17 +16,24 @@
 			  //TODO: check for bad dates and let the user know
 			  $("#check").on("click", function(){
 				  let form_data = $("#datepicker").serialize();
-				  console.log(form_data);
-				  $("#rooms_instructions").show();
-				  $.post("reservations", form_data,function(data, status){
-					  console.log(data);
-					  $("#rooms").empty();
-					  $.each(data, function(index, room) {    // Iterate over the JSON array.
-						  	$("<form>").appendTo("#rooms").attr("id", room.roomNumber).attr("class", "rez")
-						  		.append($("<input>").attr("type", "hidden").attr("name", "room_number").attr("value", room.roomNumber))
-						  		.append($("<a>").attr("href", "#").attr("class", "submit_rez").text(room.roomNumber))
-				        });
-				  });
+				  let start = $("#checkin").datepicker('getDate');
+				  let end = $("#checkout").datepicker('getDate');
+				  console.log(start);
+				  console.log(end);
+				  
+				  if((end - start) > 0){
+					  $("#rooms_instructions").show();
+					  $.post("reservations", form_data,function(data, status){
+						  $("#rooms").empty();
+						  $.each(data, function(index, room) {    // Iterate over the JSON array.
+							  	$("<form>").appendTo("#rooms").attr("id", room.roomNumber).attr("class", "rez")
+							  		.append($("<input>").attr("type", "hidden").attr("name", "room_number").attr("value", room.roomNumber))
+							  		.append($("<a>").attr("href", "#").attr("class", "submit_rez").text(room.roomNumber))
+					        });
+					  });
+				  } else {
+					  alert("End date is before beginning date.");
+				  }
 			  });
 			  
 			  $(".rez").on("click", $(".submit_rez"), function(){

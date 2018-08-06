@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 import com.revature.dao.RoomDao;
+import com.revature.model.Guest;
 import com.revature.model.Room;
 import com.revature.util.ConnectionUtil;
 
@@ -38,9 +39,13 @@ public class ReservationServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		request.getSession(true);
-		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/reservations.html");
-		dispatcher.forward(request, response);
+		if (request.getSession().getAttribute("user") instanceof Guest) {
+			request.getSession(true);
+			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/reservations.html");
+			dispatcher.forward(request, response);
+		} else {
+			response.sendRedirect("home");
+		}
 	}
 
 	/**
@@ -49,7 +54,7 @@ public class ReservationServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		//handle a request to get a list of available rooms
+		// handle a request to get a list of available rooms
 		if (request.getParameter("list") != null) {
 			ArrayList<Room> list = new ArrayList<Room>();
 
