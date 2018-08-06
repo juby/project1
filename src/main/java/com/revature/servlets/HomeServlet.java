@@ -51,13 +51,15 @@ public class HomeServlet extends HttpServlet {
 		try (Connection connection = ConnectionUtil.getConnection()) {
 			// if there is a user session
 			if (user != null) {
-				//The user is not null, so we can instantiate the proper controller
-				if(user instanceof Host) controller = new HostController(connection);
-				else if(user instanceof Guest) controller = new GuestController(connection);
-				
-				//Validate the user and their session
-				//Note that we make sure the controller has been instantiated.
-				//Not sure how this *couldn't* happen, but it never hurts to cya
+				// The user is not null, so we can instantiate the proper controller
+				if (user instanceof Host)
+					controller = new HostController(connection);
+				else if (user instanceof Guest)
+					controller = new GuestController(connection);
+
+				// Validate the user and their session
+				// Note that we make sure the controller has been instantiated.
+				// Not sure how this *couldn't* happen, but it never hurts to cya
 				if (controller != null && controller.validate(user)) {
 					dispatcher = getServletContext().getRequestDispatcher("/dashboard");
 					dispatcher.forward(request, response);
@@ -68,9 +70,11 @@ public class HomeServlet extends HttpServlet {
 			// if any of those various checks fail, redirect to the login screen
 			if (!dash) {
 				Cookie[] cookies = request.getCookies();
-				for (Cookie cookie : cookies) {
-					if (cookie.getName().equals("login"))
-						response.addCookie(new Cookie("login", ""));
+				if (cookies != null) {
+					for (Cookie cookie : cookies) {
+						if (cookie.getName().equals("login"))
+							response.addCookie(new Cookie("login", ""));
+					}
 				}
 				dispatcher = getServletContext().getRequestDispatcher("/login");
 				dispatcher.forward(request, response);

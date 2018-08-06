@@ -8,12 +8,39 @@
 		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 		<script>
+		//gets all reservations for this user
+		function list_reservations(){
+			$.post("reservations", {"list_rez" : "list_rez"}, function(data, status){
+				console.log(data);
+				$("#rooms").empty();
+				$("#rooms_instructions").hide();
+				$("#get_reservations").hide();
+				$("<table>").appendTo("#rooms").attr("id", "rez_table");
+				$("<thead>").appendTo("table");
+				$("<tr>").appendTo("thead")
+					.append($("<th>").text("Check-in date"))
+					.append($("<th>").text("Check-out date"))
+					.append($("<th>").text("Room number"))
+					.append($("<th>").text("Approved"));
+				$("<tbody>").appendTo("table");
+				$.each(data, function(index, rez){
+					let approved = (rez.approved == 1) ? "Yes" : "No";
+					console.log(rez.checkin.year);
+					$("<tr>").appendTo("tbody")
+						.append($("<td>").text(rez.checkin.month + "/" + rez.checkin.day + "/" + rez.checkin.year))
+						.append($("<td>").text(rez.checkout.month + "/" + rez.checkout.day + "/" + rez.checkout.year))
+						.append($("<td>").text(rez.room.roomNumber))
+						.append($("<td>").text(approved));
+				});
+			});
+		}
+		
 		$( function() {
 			  $(".date").datepicker();
 			  $("#rooms_instructions").hide();
+			  $("#get_reservations").hide();
 			  
-			  //checks the dates to see what rooms are open
-			  //TODO: check for bad dates and let the user know
+			  // checks the dates to see what rooms are open
 			  $("#check").on("click", function(){
 				  let form_data = $("#datepicker").serialize();
 				  let start = $("#checkin").datepicker('getDate');
@@ -21,6 +48,7 @@
 				  
 				  if((end - start) > 0){
 					  $("#rooms_instructions").show();
+					  $("#get_reservations").show();
 					  $.post("reservations", form_data,function(data, status){
 						  $("#rooms").empty();
 						  $.each(data, function(index, room) {    // Iterate over the JSON array.
@@ -34,6 +62,7 @@
 				  }
 			  });
 			  
+			  // creates a reservation request
 			  $("#rooms").on("click", ".submit_rez", function(){
 				  let data = {
 						  "checkin": $("#checkin").val(),
@@ -43,6 +72,8 @@
 				  };
 				  $.post("reservations", data, function(data,status){
 					  $("#rooms").empty();
+					  $("#rooms_instructions").hide();
+					  $("#get_reservations").show();
 					  $("#rooms").text(data);
 				  })
 			  });
@@ -56,13 +87,18 @@
 					Start date: <input type="text" class="date" id="checkin" name="checkin"><br /> 
 					End date: <input type="text" class="date" id="checkout" name="checkout"><br />
 					<input type="button" id="check" value="Check Dates">
-					<input type="hidden" name="list" value="list">
+					<input type="hidden" name="list_rooms" value="list_rooms">
 				</form>
-			</div>
-			<div id="rooms">
+				<span id="get_reservations"><a href="#" onclick="list_reservations()">Click to show existing reservations</a><br/></span>
 				<span id="rooms_instructions">Click to reserve a room for the selected dates:</span>
+			</div>
+			<div id="rooms">				
 			</div>
 			<div><a href="dashboard">Back to Dashboard</a></div>
 		</main>
 	</body>
+	
+	<script type="text/javascript">
+	$(list_reservations()); //initialize the page with a list of ther user's reservations
+	</script>
 </html>

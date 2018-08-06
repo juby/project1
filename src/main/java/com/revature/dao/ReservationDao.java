@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.revature.model.Guest;
 import com.revature.model.Reservation;
 
 public class ReservationDao implements Dao<Reservation> {
@@ -92,6 +93,33 @@ public class ReservationDao implements Dao<Reservation> {
 		List<Reservation> rezes = new ArrayList<Reservation>();
 		String sql = "SELECT * FROM reservations";
 		ps = connection.prepareStatement(sql);
+		ResultSet rs = ps.executeQuery();
+
+		while (rs.next()) {
+			boolean approved = rs.getInt("rez_status") == 1 ? true : false;
+			rez = new Reservation(rs.getInt("rez_id"), gdao.read(rs.getInt("rez_guestid")),
+					rdao.read(rs.getInt("rez_roomid")), hdao.read(rs.getInt("rez_hostid")),
+					rs.getDate("rez_checkin").toLocalDate(), rs.getDate("rez_checkout").toLocalDate(), approved);
+			rezes.add(rez);
+		}
+
+		rs.close();
+		ps.close();
+
+		return rezes;
+	}
+	
+	public List<Reservation> readAllByGuest(Guest guest) throws SQLException {
+		GuestDao gdao = new GuestDao(connection);
+		HostDao hdao = new HostDao(connection);
+		RoomDao rdao = new RoomDao(connection);
+
+		PreparedStatement ps = null;
+		Reservation rez = null;
+		List<Reservation> rezes = new ArrayList<Reservation>();
+		String sql = "SELECT * FROM reservations where rez_guestid = ?";
+		ps = connection.prepareStatement(sql);
+		ps.setInt(1, guest.getId());
 		ResultSet rs = ps.executeQuery();
 
 		while (rs.next()) {

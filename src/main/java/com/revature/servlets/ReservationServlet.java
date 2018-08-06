@@ -57,7 +57,7 @@ public class ReservationServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// handle a request to get a list of available rooms
-		if (request.getParameter("list") != null) {
+		if (request.getParameter("list_rooms") != null) {
 			// initialize variables
 			ArrayList<Room> list = new ArrayList<Room>();
 			DateTimeFormatter format = DateTimeFormatter.ofPattern("MM/d/yyyy");
@@ -100,12 +100,35 @@ public class ReservationServlet extends HttpServlet {
 				// Make the reservation
 				Reservation rez = new Reservation(0, guest, room, null, checkin, checkout, false);
 				rezdao.create(rez);
-				
-				//Send the response
+
+				// Send the response
 				response.setContentType("text/plain");
 				response.setCharacterEncoding("UTF-8");
-				response.getWriter().write("Reservation for room " + room.getRoomNumber() + " from " + request.getParameter("checkin") + " to " + request.getParameter("checkout") + " has been added to the system and will be approved by a host soon.");
+				response.getWriter()
+						.write("Reservation for room " + room.getRoomNumber() + " from "
+								+ request.getParameter("checkin") + " to " + request.getParameter("checkout")
+								+ " has been added to the system and will be approved by a host soon.");
+
+				connection.close();
+			} catch (SQLException e) {
+				response.getWriter().write(e.getMessage());
+			}
+		}
+
+		// get all of a user's reservations
+		else if (request.getParameter("list_rez") != null) {
+			// initialize variables
+			ArrayList<Reservation> list = new ArrayList<Reservation>();
+			try (Connection connection = ConnectionUtil.getConnection()) {
+				ReservationDao dao = new ReservationDao(connection);
+				list = (ArrayList<Reservation>) dao.readAllByGuest((Guest) request.getSession().getAttribute("user") );
 				
+				// Generate a JSON object from the list and return it
+				String json = new Gson().toJson(list);
+				response.setContentType("application/json");
+				response.setCharacterEncoding("UTF-8");
+				response.getWriter().write(json);
+
 				connection.close();
 			} catch (SQLException e) {
 				response.getWriter().write(e.getMessage());
