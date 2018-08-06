@@ -50,8 +50,7 @@ public class DashboardServlet extends HttpServlet {
 			dispatcher.forward(request, response);
 		} else {
 			// I have no idea how you even got here. Sending you back home
-			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/home");
-			dispatcher.forward(request, response);
+			response.sendRedirect("/home");
 		}
 	}
 

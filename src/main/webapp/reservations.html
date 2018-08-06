@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="ISO-8859-1">
+		<title>Insert title here</title>
+		<link rel="stylesheet"
+			href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+		<script>
+		$( function() {
+			  $(".date").datepicker();
+			  $("#rooms_instructions").hide();
+			  
+			  //checks the dates to see what rooms are open
+			  //TODO: check for bad dates and let the user know
+			  $("#check").on("click", function(){
+				  let form_data = $("#datepicker").serialize();
+				  console.log(form_data);
+				  $("#rooms_instructions").show();
+				  $.post("reservations", form_data,function(data, status){
+					  console.log(data);
+					  $("#rooms").empty();
+					  $.each(data, function(index, room) {    // Iterate over the JSON array.
+						  	$("<form>").appendTo("#rooms").attr("id", room.roomNumber).attr("class", "rez")
+						  		.append($("<input>").attr("type", "hidden").attr("name", "room_number").attr("value", room.roomNumber))
+						  		.append($("<a>").attr("href", "#").attr("class", "submit_rez").text(room.roomNumber))
+				        });
+				  });
+			  });
+			  
+			  $(".rez").on("click", $(".submit_rez"), function(){
+				  let data = {
+						  "checkin": $("#checkin").val(),
+						  "checkout": $("#checkout").val(),
+						  "room_number": $(this).attr()
+				  }
+			  });
+		});
+		</script>
+	</head>
+	<body>
+		<main>
+			<div id="controls">
+				<form id="datepicker">
+					Start date: <input type="text" class="date" id="checkin" name="checkin"><br /> 
+					End date: <input type="text" class="date" id="checkout" name="checkout"><br />
+					<input type="button" id="check" value="Check Dates">
+					<input type="hidden" name="list" value="list">
+				</form>
+			</div>
+			<div id="rooms">
+				<span id="rooms_instructions">Click to reserve a room for the selected dates:</span>
+			</div>
+			<div><a href="dashboard">Back to Dashboard</a></div>
+		</main>
+	</body>
+</html>
