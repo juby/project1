@@ -46,7 +46,7 @@ public class ReservationServlet extends HttpServlet {
 			request.getSession(true);
 			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/reservations.html");
 			dispatcher.forward(request, response);
-		} else if (request.getSession().getAttribute("user") instanceof Host){
+		} else if (request.getSession().getAttribute("user") instanceof Host) {
 			request.getSession(true);
 			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/rezmanager.html");
 			dispatcher.forward(request, response);
@@ -126,13 +126,53 @@ public class ReservationServlet extends HttpServlet {
 			ArrayList<Reservation> list = new ArrayList<Reservation>();
 			try (Connection connection = ConnectionUtil.getConnection()) {
 				ReservationDao dao = new ReservationDao(connection);
-				list = (ArrayList<Reservation>) dao.readAllByGuest((Guest) request.getSession().getAttribute("user") );
-				
+				if (request.getSession().getAttribute("user") instanceof Guest)
+					list = (ArrayList<Reservation>) dao
+							.readAllByGuest((Guest) request.getSession().getAttribute("user"));
+				else
+					list = (ArrayList<Reservation>) dao.readAll();
 				// Generate a JSON object from the list and return it
 				String json = new Gson().toJson(list);
 				response.setContentType("application/json");
 				response.setCharacterEncoding("UTF-8");
 				response.getWriter().write(json);
+
+				connection.close();
+			} catch (SQLException e) {
+				response.getWriter().write(e.getMessage());
+			}
+		}
+
+		// approve a reservation
+		else if (request.getParameter("approve") != null) {
+			// initialize variables
+			try (Connection connection = ConnectionUtil.getConnection()) {
+				ReservationDao dao = new ReservationDao(connection);
+				Reservation rez = dao.read(Integer.parseInt(request.getParameter("rez_id").split("_")[1]));
+
+				dao.approve(rez, (Host) request.getSession().getAttribute("user"));
+
+				response.setContentType("text/plain");
+				response.setCharacterEncoding("UTF-8");
+				response.getWriter().write("success");
+
+				connection.close();
+			} catch (SQLException e) {
+				response.getWriter().write(e.getMessage());
+			}
+		}
+
+		// delete a reservation
+		else if (request.getParameter("delete") != null) {
+			try (Connection connection = ConnectionUtil.getConnection()) {
+				ReservationDao dao = new ReservationDao(connection);
+				Reservation rez = dao.read(Integer.parseInt(request.getParameter("rez_id").split("_")[1]));
+
+				dao.delete(rez);
+
+				response.setContentType("text/plain");
+				response.setCharacterEncoding("UTF-8");
+				response.getWriter().write("success");
 
 				connection.close();
 			} catch (SQLException e) {

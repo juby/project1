@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.revature.model.Guest;
+import com.revature.model.Host;
 import com.revature.model.Reservation;
 
 public class ReservationDao implements Dao<Reservation> {
@@ -169,6 +170,20 @@ public class ReservationDao implements Dao<Reservation> {
 		
 		boolean ret = (i == 0) ? false : true;
 
+		ps.close();
+		
+		return ret;
+	}
+	
+	public int approve(Reservation rez, Host host) throws SQLException {
+		PreparedStatement ps = null;
+		String sql = "Update reservations set rez_status = ?, rez_hostid = ? where rez_id = ?";
+		ps = connection.prepareStatement(sql);
+		ps.setInt(1, 1);
+		ps.setInt(2, host.getId());
+		ps.setInt(3, rez.getId());
+		
+		int ret = ps.executeUpdate();
 		ps.close();
 		
 		return ret;

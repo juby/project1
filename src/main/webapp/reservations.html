@@ -11,7 +11,6 @@
 		//gets all reservations for this user
 		function list_reservations(){
 			$.post("reservations", {"list_rez" : "list_rez"}, function(data, status){
-				console.log(data);
 				$("#rooms").empty();
 				$("#rooms_instructions").hide();
 				$("#get_reservations").hide();
@@ -25,7 +24,6 @@
 				$("<tbody>").appendTo("table");
 				$.each(data, function(index, rez){
 					let approved = (rez.approved == 1) ? "Yes" : "No";
-					console.log(rez.checkin.year);
 					$("<tr>").appendTo("tbody")
 						.append($("<td>").text(rez.checkin.month + "/" + rez.checkin.day + "/" + rez.checkin.year))
 						.append($("<td>").text(rez.checkout.month + "/" + rez.checkout.day + "/" + rez.checkout.year))

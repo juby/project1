@@ -1,10 +1,83 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="ISO-8859-1">
-<title>Revature Inn and Suites - Reservations Management</title>
-</head>
-<body>
-	<h1>Reservations manager</h1>
-</body>
+	<head>
+		<meta charset="ISO-8859-1">
+		<title>Revature Inn and Suites - Reservations Management</title>
+		<link rel="stylesheet"
+			href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+		<script>
+		$(function(){
+			list_reservations();
+			
+			$("#rooms").on("click", ".approve a", function(){
+				let data = {
+						"approve" : "approve",
+						"rez_id" : $(this).parent().attr("id")
+				}
+				$.post("reservations", data, function(response, status){
+					if(response == "success"){
+						alert("Reservation approved");
+						list_reservations();
+					}
+				});
+			});
+			
+			$("#rooms").on("click", ".delete a", function(){
+				let data = {
+						"delete" : "delete",
+						"rez_id" : $(this).parent().attr("id")
+				}
+				$.post("reservations", data, function(response, status){
+					if(response == "success"){
+						alert("Reservation deleted");
+						list_reservations();
+					}
+				});
+			});
+		});
+		
+		//gets all reservations and generates a table for them, with controls
+		//to delete and approve each one
+		function list_reservations(){
+			$.post("reservations", {"list_rez" : "list_rez"}, function(data, status){
+				$("#rooms").empty();
+				$("#rooms_instructions").hide();
+				$("#get_reservations").hide();
+				$("<table>").appendTo("#rooms").attr("id", "rez_table");
+				$("<thead>").appendTo("table");
+				$("<tr>").appendTo("thead")
+					.append($("<th>").text("Check-in date"))
+					.append($("<th>").text("Check-out date"))
+					.append($("<th>").text("Room number"))
+					.append($("<th>").attr("colspan", "2").text("Manage"));
+				$("<tbody>").appendTo("table");
+				$.each(data, function(index, rez){
+					let td = null;
+					if(rez.approved == 1)
+						td = $("<td>").text("Approved");
+					else
+						td = $("<td>").attr("id", "approve_" + rez.id).attr("class", "approve");
+						
+					$("<tr>").appendTo("tbody")
+						.append($("<td>").text(rez.checkin.month + "/" + rez.checkin.day + "/" + rez.checkin.year))
+						.append($("<td>").text(rez.checkout.month + "/" + rez.checkout.day + "/" + rez.checkout.year))
+						.append($("<td>").text(rez.room.roomNumber))
+						.append(td)
+						.append($("<td>").attr("id", "delete_" + rez.id).attr("class", "delete"));
+					($("<a>").attr("href", "#").text("Approve")).appendTo("#approve_" + rez.id);
+					($("<a>").attr("href", "#").text("Delete")).appendTo("#delete_" + rez.id);
+				});
+			});
+		};
+		</script>
+	</head>
+	<body>
+		<h1>Reservations manager</h1>
+		<main>
+			<div id="rooms"></div>
+			<div><a href="dashboard">Back to Dashboard</a></div>
+		</main>
+	</body>
 </html>
