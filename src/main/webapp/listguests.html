@@ -1,10 +1,48 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="ISO-8859-1">
-<title>Insert title here</title>
-</head>
-<body>
-
-</body>
+	<head>
+		<meta charset="ISO-8859-1">
+		<title>Revature Inn and Suites - Guest List</title>
+		</head>
+		<link rel="stylesheet"
+			href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+		<script>
+		function list_guests(){
+			$.post("guests", { "list_guests" : "list_guests" }, function(data, status){
+				$.each(data, function(index, guest){
+					$("<tr>").appendTo($("tbody"))
+						.append($("<td>").text(guest.firstName))
+						.append($("<td>").text(guest.lastName))
+						.append($("<td>").text(guest.userName))
+						.append($("<td>").attr("id","email_" + guest.id));
+					($("<a>").attr("href", "mailto:" + guest.email).text(guest.email))
+						.appendTo("#email_" + guest.id);
+				});
+			});
+		};
+		
+		$(function(){
+			list_guests();
+		});
+		</script>
+	<body>
+		<h1>Guests</h1>
+		<div id="guests">
+			<table>
+				<thead>
+					<tr>
+						<th>First Name</th>
+						<th>Last Name</th>
+						<th>Username</th>
+						<th>Email</th>
+					</tr>
+				</thead>
+				
+				<tbody></tbody>
+			</table>
+		</div>
+		<div><a href="home">Back to Dashboard</a></div>
+	</body>
 </html>
