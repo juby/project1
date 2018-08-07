@@ -13,7 +13,11 @@ import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
 import com.revature.dao.GuestDao;
+import com.revature.dao.HostDao;
+import com.revature.dao.UserDao;
 import com.revature.model.Guest;
+import com.revature.model.Host;
+import com.revature.model.User;
 import com.revature.util.ConnectionUtil;
 
 /**
@@ -37,7 +41,7 @@ public class ProfileServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpSession session = request.getSession();
-		if (session.getAttribute("user") instanceof Guest) {
+		if (session.getAttribute("user") != null) {
 			// if it's a host, give them the host dash
 			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/guestprofile.html");
 			dispatcher.forward(request, response);
@@ -50,6 +54,7 @@ public class ProfileServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// Send back the user information in JSON format for populating forms
@@ -65,18 +70,26 @@ public class ProfileServlet extends HttpServlet {
 		// Update the user's information
 		else if (request.getParameter("update") != null) {
 			try (Connection connection = ConnectionUtil.getConnection()) {
-				//initialize variables
-				GuestDao dao = new GuestDao(connection);
-				Guest guest = (Guest) request.getSession().getAttribute("user");
+				User user;
+				UserDao dao;
 				
-				//update the guest object
-				guest.setEmail(request.getParameter("email"));
-				guest.setFirstName(request.getParameter("first_name"));
-				guest.setLastName(request.getParameter("last_name"));
-				guest.setUserName(request.getParameter("user_name"));
+				// initialize variables
+				if (request.getSession().getAttribute("user") instanceof Guest) {
+					dao = new GuestDao(connection);
+					user = (Guest) request.getSession().getAttribute("user");
+				} else {
+					dao = new HostDao(connection);
+					user = (Host) request.getSession().getAttribute("user");
+				}
 				
-				//use the dao to update the database
-				dao.update(guest);
+				// update the guest object
+				user.setEmail(request.getParameter("email"));
+				user.setFirstName(request.getParameter("first_name"));
+				user.setLastName(request.getParameter("last_name"));
+				user.setUserName(request.getParameter("user_name"));
+
+				// use the dao to update the database
+				dao.update(user);
 			} catch (SQLException e) {
 				response.getWriter().write(e.getMessage());
 			}

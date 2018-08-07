@@ -19,10 +19,10 @@
 		
 		function update(){
 			let bad_form = false;
-			if($("#first_name") == "") bad_form = true;
-			if($("#last_name") == "") bad_form = true;
-			if($("#user_name") == "") bad_form = true;
-			if($("#email") == "") bad_form = true;
+			if($("#first_name").val() == "") bad_form = true;
+			if($("#last_name").val() == "") bad_form = true;
+			if($("#user_name").val() == "") bad_form = true;
+			if($("#email").val() == "") bad_form = true;
 			
 			if(bad_form) alert("One or more fields is blank.");
 			else $.post("profile", $("form").serialize(), function(data, status){
