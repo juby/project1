@@ -21,13 +21,13 @@ import com.revature.util.ConnectionUtil;
 /**
  * Servlet implementation class GuestList
  */
-public class GuestList extends HttpServlet {
+public class GuestListServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public GuestList() {
+	public GuestListServlet() {
 		super();
 	}
 

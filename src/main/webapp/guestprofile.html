@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="ISO-8859-1">
+		<title>Revature Inn and Suites - User Profile</title>
+		<link rel="stylesheet"
+			href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+		<script>
+		function populate_form(){
+			$.post("profile", {"populate" : "populate"}, function(user, status){
+				$("#first_name").val(user.firstName);
+				$("#last_name").val(user.lastName);
+				$("#user_name").val(user.userName);
+				$("#email").val(user.email);
+			});
+		};
+		
+		function update(){
+			let bad_form = false;
+			if($("#first_name") == "") bad_form = true;
+			if($("#last_name") == "") bad_form = true;
+			if($("#user_name") == "") bad_form = true;
+			if($("#email") == "") bad_form = true;
+			
+			if(bad_form) alert("One or more fields is blank.");
+			else $.post("profile", $("form").serialize(), function(data, status){
+				populate_form();
+				alert("Profile updated");
+			});
+		}
+		
+		$(function(){
+			populate_form();
+			
+			//overriding the submit function on the form so we can use the
+			//browser's built-in email address validation but still ajax the form
+			$("form").submit(function(e){
+		        e.preventDefault();
+		        update();
+		        return false; //just to cover our ass
+		    });
+		});
+		</script>
+	</head>
+	<body>
+		<h1>Profile</h1>
+		<form>
+			<input type="hidden" name="update" value="update">
+			First Name: <input type="text" name="first_name" id="first_name"><br/>
+			Last Name: <input type="text" name="last_name" id="last_name"><br/>
+			User Name: <input type="text" name="user_name" id="user_name"><br/>
+			Email Address: <input type="email" name="email" id="email"><br/>
+			<input type="submit" value="Update" id="update">
+		</form>
+		<div><a href="home">Back to Dashboard</a></div>
+	</body>
+</html>

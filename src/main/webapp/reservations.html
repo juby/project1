@@ -79,22 +79,20 @@
 		</script>
 	</head>
 	<body>
-		<main>
-			<h1>Reservations</h1>
-			<div id="controls">
-				<form id="datepicker">
-					Start date: <input type="text" class="date" id="checkin" name="checkin"><br /> 
-					End date: <input type="text" class="date" id="checkout" name="checkout"><br />
-					<input type="button" id="check" value="Check Dates">
-					<input type="hidden" name="list_rooms" value="list_rooms">
-				</form>
-				<span id="get_reservations"><a href="#" onclick="list_reservations()">Click to show existing reservations</a><br/></span>
-				<span id="rooms_instructions">Click to reserve a room for the selected dates:</span>
-			</div>
-			<div id="rooms">				
-			</div>
-			<div><a href="dashboard">Back to Dashboard</a></div>
-		</main>
+		<h1>Reservations</h1>
+		<div id="controls">
+			<form id="datepicker">
+				Start date: <input type="text" class="date" id="checkin" name="checkin"><br /> 
+				End date: <input type="text" class="date" id="checkout" name="checkout"><br />
+				<input type="button" id="check" value="Check Dates">
+				<input type="hidden" name="list_rooms" value="list_rooms">
+			</form>
+			<span id="get_reservations"><a href="#" onclick="list_reservations()">Click to show existing reservations</a><br/></span>
+			<span id="rooms_instructions">Click to reserve a room for the selected dates:</span>
+		</div>
+		<div id="rooms">				
+		</div>
+		<div><a href="dashboard">Back to Dashboard</a></div>
 	</body>
 	
 	<script type="text/javascript">
