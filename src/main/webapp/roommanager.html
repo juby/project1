@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="ISO-8859-1">
+		<title>Revature Inn and Suites - Room Management</title>
+		<link rel="stylesheet"
+			href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+		<script>
+		function list_rooms(){
+			$.post("rooms", { "list_rooms" : "list_rooms" },function(data, status){
+				$("#rooms").empty();
+				$("<table>").appendTo("#rooms").attr("id", "room_table");
+				$("<thead>").appendTo("table");
+				$("<tr>").appendTo("thead")
+					.append($("<th>").text("Room Number"))
+					.append($("<th>").attr("colspan", "2").text("Manage"));
+				$("<tbody>").appendTo("table");
+				$.each(data, function(index, room){
+					let td = $("<td>");
+					if(room.roomPic != null)
+						td = $("<td>").append($("<a>").attr("href", "img/" + room.roomPic).text("image"));
+					$("<tr>").appendTo("tbody")
+						.append($("<td>").text(room.roomNumber))
+						.append(td)
+						.append($("<td>").attr("id", "delete_" + room.roomNumber).attr("class","delete"));
+					($("<a>").attr("href", "#").text("Delete")).appendTo($("#delete_" + room.roomNumber));
+				});
+			});
+		};
+		
+		$(function(){
+			list_rooms();
+			
+			$("#rooms").on("click", ".delete a", function(){
+				let request = {
+						"delete_room" : "delete_room",
+						"room_id" : $(this).parent().attr("id")
+				}
+				$.post("rooms", request, function(data, status){
+					if(data == "success"){
+						$("#notification").hide();
+						list_rooms();
+						alert("Room deleted");
+					} else {
+						$("#notification").show();
+						$("#notification").empty();
+						$("#notification")
+							.append($("<a>")
+								.attr("href", "reservations")
+								.text("The selected room still has active reservations. Click here to manage reservations."));
+					}
+				});
+			});
+		});
+		</script>
+	</head>
+	<body>
+		<h1>Room Management</h1>
+		<div id="notification"></div>
+		<div id="rooms"></div>
+		<div><a href="dashboard">Back to Dashboard</a></div>
+	</body>
+</html>

@@ -11,6 +11,7 @@ import java.util.List;
 import com.revature.model.Guest;
 import com.revature.model.Host;
 import com.revature.model.Reservation;
+import com.revature.model.Room;
 
 public class ReservationDao implements Dao<Reservation> {
 	private Connection connection;
@@ -22,6 +23,8 @@ public class ReservationDao implements Dao<Reservation> {
 		super();
 		this.connection = connection;
 	}
+	
+	//TODO: purge old reservations
 
 	@Override
 	public void create(Reservation obj) throws SQLException {
@@ -121,6 +124,33 @@ public class ReservationDao implements Dao<Reservation> {
 		String sql = "SELECT * FROM reservations where rez_guestid = ?";
 		ps = connection.prepareStatement(sql);
 		ps.setInt(1, guest.getId());
+		ResultSet rs = ps.executeQuery();
+
+		while (rs.next()) {
+			boolean approved = rs.getInt("rez_status") == 1 ? true : false;
+			rez = new Reservation(rs.getInt("rez_id"), gdao.read(rs.getInt("rez_guestid")),
+					rdao.read(rs.getInt("rez_roomid")), hdao.read(rs.getInt("rez_hostid")),
+					rs.getDate("rez_checkin").toLocalDate(), rs.getDate("rez_checkout").toLocalDate(), approved);
+			rezes.add(rez);
+		}
+
+		rs.close();
+		ps.close();
+
+		return rezes;
+	}
+	
+	public List<Reservation> readAllByRoom(Room room) throws SQLException {
+		GuestDao gdao = new GuestDao(connection);
+		HostDao hdao = new HostDao(connection);
+		RoomDao rdao = new RoomDao(connection);
+
+		PreparedStatement ps = null;
+		Reservation rez = null;
+		List<Reservation> rezes = new ArrayList<Reservation>();
+		String sql = "SELECT * FROM reservations where rez_roomid = ?";
+		ps = connection.prepareStatement(sql);
+		ps.setInt(1, room.getRoomNumber());
 		ResultSet rs = ps.executeQuery();
 
 		while (rs.next()) {

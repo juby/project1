@@ -28,6 +28,18 @@
 		<description></description>
 		<servlet-class>com.revature.servlets.ReservationServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>RoomServlet</servlet-name>
+		<display-name>RoomServlet</display-name>
+		<description></description>
+		<servlet-class>com.revature.servlets.RoomServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>GuestList</servlet-name>
+		<display-name>GuestList</display-name>
+		<description></description>
+		<servlet-class>com.revature.servlets.GuestList</servlet-class>
+	</servlet>
 	
 	<servlet-mapping>
 		<servlet-name>LoginServlet</servlet-name>
@@ -44,6 +56,14 @@
 	<servlet-mapping>
 		<servlet-name>ReservationServlet</servlet-name>
 		<url-pattern>/reservations</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>RoomServlet</servlet-name>
+		<url-pattern>/rooms</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>GuestList</servlet-name>
+		<url-pattern>/guests</url-pattern>
 	</servlet-mapping>
 
 	<welcome-file-list>

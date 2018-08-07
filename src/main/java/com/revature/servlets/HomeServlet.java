@@ -31,7 +31,6 @@ public class HomeServlet extends HttpServlet {
 	 */
 	public HomeServlet() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -82,7 +81,6 @@ public class HomeServlet extends HttpServlet {
 
 			connection.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			response.getWriter().append(e.getMessage());
 			e.printStackTrace(response.getWriter());
 		}

@@ -35,9 +35,9 @@ public class HostController extends UserController<Host> {
 		return h;
 	}
 	
-	public Guest createTempGuest(String username, String firstname, String lastname, String email) {
+	public Guest createTempGuest(Host creator, String username, String firstname, String lastname, String email) {
 		return null;
-		//TODO temporary guest
+		// TODO create temp guest
 	}
 
 	@Override
